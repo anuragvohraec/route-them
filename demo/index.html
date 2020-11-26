@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      background: #fafafa;
+    }
+    .nav{
+      padding: 10px;
+      background-color: aqua;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="demo"></div>
+
+  <script type="module">
+    import { html, render } from 'lit-html';
+    import {BlocsProvider} from 'lit-bloc-js';
+    import '../dist/route-them.js';
+    import {RouteThemBloc} from '../dist/index.js';
+
+    render(
+      html`
+<route-them-controller>
+  <div style="display: flex; ">
+  <div class="nav" @click=${function(){
+    let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+    routeBloc.goToPage("/contacts");
+  }}>GoToContacts</div>
+  <div class="nav" @click=${function(){
+    let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+    routeBloc.goToPage("/");
+  }}>GoToHome</div>
+  <div class="nav"  @click=${function(){
+    let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+    routeBloc.goToPage("/contacts/tester123");
+  }}>GoToProfile</div>
+  </div>
+  <route-them>
+    <a-page route="/">
+      <div>Home</div>
+    </a-page>
+    <a-page route="/contacts">
+      <div>Contacts</div>
+    </a-page>
+    <a-page route="/contacts/:id">
+      <div>Contacts for id: </div>
+    </a-page>
+  </route-them>
+</route-them-controller>
+      `,
+      document.querySelector('#demo')
+    );
+  </script>
+</body>
+</html>
