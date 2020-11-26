@@ -1,5 +1,5 @@
 import { html, TemplateResult} from 'lit-html';
-import {Bloc, BlocsProvider, BlocBuilder} from 'lit-bloc-js';
+import {Bloc, BlocsProvider, BlocBuilder} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 
 
