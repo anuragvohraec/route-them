@@ -76,7 +76,7 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
   }
   
   connectedCallback(){
-    
+    super.connectedCallback();
     let routeBloc = BlocsProvider.of<RouteThemBloc, RouteState>(RouteThemBloc,this);
     
     this.querySelectorAll("a-page").forEach(e=>{
