@@ -76,7 +76,7 @@ class _BogusBloc extends Bloc<number>{
  * Without this man content will be visible uncontrollably.
  */
 export class RouteThem extends BlocBuilder<_BogusBloc,number>{
-  constructor(){
+  constructor(private pageTagName: string = "a-page"){
     super(_BogusBloc, {
       useThisBloc: new _BogusBloc()
     });
@@ -86,7 +86,7 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
     super.connectedCallback();
     let routeBloc = BlocsProvider.of<RouteThemBloc, RouteState>(RouteThemBloc,this);
     
-    this.querySelectorAll("a-page").forEach(e=>{
+    this.querySelectorAll(this.pageTagName).forEach(e=>{
       let r = e.getAttribute("route");
       if(!r){
         throw `No route defined for a page`;
