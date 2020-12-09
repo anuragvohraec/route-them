@@ -52,3 +52,16 @@ If you customize the configuration a lot, you can consider moving them to indivi
 npm start
 ```
 To run a local development server that serves the basic demo located in `demo/index.html`
+
+## Version info
+
+### "version": "2.0.3"
+1. Now you can pass A custom name for page tags to constructor. To create custom conctroller.
+```ts
+export class RouteThem extends BlocBuilder<_BogusBloc,number>{
+  constructor(private pageTagName: string = "a-page"){
+    super(_BogusBloc, {
+      useThisBloc: new _BogusBloc()
+    });
+  }
+```
