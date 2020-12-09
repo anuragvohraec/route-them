@@ -54,6 +54,9 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "2.0.5"
+1. made further small changes to make router more generic and extensible 
+
 ### "version": "2.0.4"
 1. made further small changes to make router more generic.
 

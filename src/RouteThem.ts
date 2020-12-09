@@ -175,7 +175,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
     
   }
 
-  private _getBaseTemplate(doHide: boolean): TemplateResult{
+  protected _getBaseTemplate(doHide: boolean): TemplateResult{
     return html`
     <style>
       .hide{
