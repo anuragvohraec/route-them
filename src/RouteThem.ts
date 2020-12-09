@@ -11,10 +11,13 @@ export interface RouteState{
 
 export class RouteThemBloc extends Bloc<RouteState>{
   private _compass: Compass = new Compass();
+  private _init_path: string;
 
   constructor(initState: RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}){
     super(initState);
     this._compass.define("/");
+    let t = document.location.pathname;
+    this._init_path = t.substring(0,t.length-1);
 
     window.onpopstate = (e: PopStateEvent)=>{
         let oldState: RouteState = e.state;
@@ -40,7 +43,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
       };
       this.emit(newRouteState);
       if(options.saveToBrowserHistory){
-        history.pushState(newRouteState,options.title,window.location.origin+url_path);
+        history.pushState(newRouteState,options.title,window.location.origin+this._init_path+url_path);
       }
     }else{
       console.log(`No route exists for path: ${url_path}`);
