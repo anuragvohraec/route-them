@@ -68,6 +68,10 @@ class _BogusBloc extends Bloc<number>{
   }
 }
 
+/**
+ * At first this may seems redundant, but its required to encapsulate pages.
+ * Without this man content will be visible uncontrollably.
+ */
 export class RouteThem extends BlocBuilder<_BogusBloc,number>{
   constructor(){
     super(_BogusBloc, {
@@ -93,8 +97,13 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
   }
 }
 
+
 export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
+  static _allowedBehavior: Set<string>=new Set<string>(["hide","lazyhide","reload"]);
   private route:string;
+  private behaves: "hide"|"lazyhide"|"reload";
+  private _loaded_once: boolean=false;
+
   constructor(){
     super(RouteThemBloc)
     let r = this.getAttribute("route");
@@ -103,10 +112,65 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
     }else{
       this.route=r;
     }
+
+    this.behaves=this.getBehavior();
+  }
+
+  /**
+   * Default behavior is lazyhide
+   */
+  private getBehavior():"hide"|"lazyhide"|"reload"{
+    let r = this.getAttribute("behaves");
+    if(r){
+      r = r.toLowerCase();
+      if(APage._allowedBehavior.has(r)){
+        //@ts-ignore
+        return r;
+      }
+    }
+    return "lazyhide";
+  }
+
+  private toBeHidden(state: RouteState):boolean{
+    if(state.pathDirection.matched_pattern === this.route){
+      return false;
+    }else{
+      return true;
+    }
   }
 
   builder(state: RouteState): TemplateResult {
+    let doHide:boolean = this.toBeHidden(state);
+
+    switch(this.behaves){
+      case "hide":
+        return this._getBaseTemplate(doHide);
+      case "reload":
+        if(doHide){
+          return html``;
+        }else{
+          return this._getBaseTemplate(false);
+        }
+      case "lazyhide":{
+        //if its for the first time
+        if(!this._loaded_once){
+          if(doHide){
+            return html``;
+          }else{
+            //that means we need to show;
+            this._loaded_once = true;
+            return this._getBaseTemplate(false);
+          }
+        }else{
+          //its already loaded 
+          return this._getBaseTemplate(doHide);
+        }
+      }
+    }
     
+  }
+
+  private _getBaseTemplate(doHide: boolean): TemplateResult{
     return html`
     <style>
       .hide{
@@ -116,15 +180,10 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
         display: block;
       }
     </style>
-    <div class="${(()=>{
-      if(state.pathDirection.matched_pattern === this.route){
-        return 'show';
-      }else{
-        return 'hide';
-      }
-    })()}">
+    <div class="${doHide?'hide':'show'}">
     <slot></slot>
     </div>
     `;
   }
+
 }

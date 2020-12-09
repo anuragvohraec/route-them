@@ -42,12 +42,15 @@
   <route-them>
     <a-page route="/">
       <div>Home</div>
+      <div><img src="green.png"></div>
     </a-page>
     <a-page route="/contacts">
       <div>Contacts</div>
+      <div><img src="blue.png"></div>
     </a-page>
-    <a-page route="/contacts/:id">
+    <a-page route="/contacts/:id" behaves="reload">
       <div>Contacts for id: </div>
+      <div><img src="red.png"></div>
     </a-page>
   </route-them>
 </route-them-controller>
