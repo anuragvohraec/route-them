@@ -54,6 +54,8 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "2.0.4"
+1. made further small changes to make router more generic.
 
 ### "version": "2.0.3"
 1. Now you can pass A custom name for page tags to constructor. To create custom conctroller.

@@ -103,21 +103,23 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
 
 export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   static _allowedBehavior: Set<string>=new Set<string>(["hide","lazyhide","reload"]);
-  private route:string;
-  private behaves: "hide"|"lazyhide"|"reload";
+  
   private _loaded_once: boolean=false;
 
   constructor(){
     super(RouteThemBloc)
+  }
+
+  
+  public get route() : string {
     let r = this.getAttribute("route");
     if(!r){
       throw `No route defined for a page`;
     }else{
-      this.route=r;
-    }
-
-    this.behaves=this.getBehavior();
+      return r;
+    } 
   }
+  
 
   /**
    * Default behavior is lazyhide
@@ -145,7 +147,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   builder(state: RouteState): TemplateResult {
     let doHide:boolean = this.toBeHidden(state);
 
-    switch(this.behaves){
+    switch(this.getBehavior()){
       case "hide":
         return this._getBaseTemplate(doHide);
       case "reload":
