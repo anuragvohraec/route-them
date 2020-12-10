@@ -1,5 +1,5 @@
 import { html, TemplateResult} from 'lit-html';
-import {Bloc, BlocsProvider, BlocBuilder} from 'bloc-them';
+import {Bloc, BlocsProvider, BlocBuilder, BlocType} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 
 
@@ -76,7 +76,7 @@ class _BogusBloc extends Bloc<number>{
  * Without this man content will be visible uncontrollably.
  */
 export class RouteThem extends BlocBuilder<_BogusBloc,number>{
-  constructor(private pageTagName: string = "a-page"){
+  constructor(private pageTagName: string = "a-page", private routeBlocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
     super(_BogusBloc, {
       useThisBloc: new _BogusBloc()
     });
@@ -84,7 +84,7 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
   
   connectedCallback(){
     super.connectedCallback();
-    let routeBloc = BlocsProvider.of<RouteThemBloc, RouteState>(RouteThemBloc,this);
+    let routeBloc = BlocsProvider.of(this.routeBlocType,this);
     
     this.querySelectorAll(this.pageTagName).forEach(e=>{
       let r = e.getAttribute("route");
@@ -106,8 +106,8 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   
   private _loaded_once: boolean=false;
 
-  constructor(){
-    super(RouteThemBloc)
+  constructor(blocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
+    super(blocType)
   }
 
   

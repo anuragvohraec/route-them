@@ -1,6 +1,6 @@
 {
   "name": "route-them",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Routing webcomponents to use with lit-bloc-js library",
   "author": "route-them",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "bloc-them": "^3.0.1",
+    "bloc-them": "^3.0.2",
     "lit-html": "^1.1.2"
   },
   "devDependencies": {

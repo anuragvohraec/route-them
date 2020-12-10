@@ -54,6 +54,9 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "2.0.6"
+1. updated as per bloc-them, making overall more generic approach
+
 ### "version": "2.0.5"
 1. made further small changes to make router more generic and extensible 
 
