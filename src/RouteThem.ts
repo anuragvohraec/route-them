@@ -60,7 +60,7 @@ export class RouteThemController extends BlocsProvider{
   }
 
   builder(): TemplateResult {
-    return html`<div><slot></slot></div>`;
+    return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
   }
 }
 
@@ -96,7 +96,7 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
   }
 
   builder(state: number): TemplateResult {
-    return html`<div><slot></slot></div>`;
+    return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
   }
 }
 
@@ -185,7 +185,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
         display: block;
       }
     </style>
-    <div class="${doHide?'hide':'show'}">
+    <div class="${doHide?'hide':'show'}" style="width:100%;height:100%;">
     <slot></slot>
     </div>
     `;

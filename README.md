@@ -39,6 +39,10 @@ For detailed example, see demo in the git lib:
 let routeBloc = BlocsProvider.of(RouteThemBloc,this);
 routeBloc.goToPage("/contacts");
 ```
+## Controlling page behavior with **behaves** attribute
+1. on a page **behaves** attribute can be provided, which can have three value: **hide** | **lazyhide** | **reload**
+2. **hide** all pages will be loaded, but only kept hidden. **lazyhide** will not render page iuntil its once called., after that it keep loaded. And **reload** will remove and reload the page, wheenever that page is accessed.
+3. default value is **lazyhide**.
 
 
 ## Tooling configs
@@ -54,6 +58,9 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "3.0.0"
+1. Now all route-them-controller, route-them , and a-page is a 100% width and height;
+
 ### "version": "2.0.6"
 1. updated as per bloc-them, making overall more generic approach
 
