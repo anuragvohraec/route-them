@@ -192,3 +192,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   }
 
 }
+
+customElements.define("route-them-controller", RouteThemController);
+customElements.define('route-them', RouteThem);
+customElements.define("a-page", APage);
