@@ -9,28 +9,46 @@ export interface RouteState{
   data?: any;
 }
 
+export interface RouterConfig{
+  bloc_name:string;
+  save_history:string;
+}
+
+export interface PopStateFunction{
+  (e: PopStateEvent):any;
+  bloc_name:string;
+}
+
 export class RouteThemBloc extends Bloc<RouteState>{
   public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}
   private _compass: Compass = new Compass();
   private _init_path: string;
 
-  constructor(private initState: RouteState = RouteThemBloc.INIT_STATE,bloc_name?:string,private save_history:boolean=false){
-    super(initState,bloc_name);
+  constructor(private routerConfig?:RouterConfig, private initState: RouteState = RouteThemBloc.INIT_STATE){
+    super(initState,routerConfig?.bloc_name);
     this._compass.define("/");
     let t = document.location.pathname;
     this._init_path = t.substring(0,t.length-1);
 
-    if(save_history){
+    if(routerConfig?.save_history){
+      if(!routerConfig.bloc_name){
+        throw `For saving history bloc_name is mandatory`;
+      }
       if(window.onpopstate){
-        throw `No two router can have pop states any more`;
+        const prev_bloc= (window.onpopstate as PopStateFunction).bloc_name;
+        throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${routerConfig.bloc_name}!`;
       }
-      window.onpopstate = (e: PopStateEvent)=>{
-          let oldState: RouteState = e.state;
-          if(!oldState){
-            oldState=this.initState;
-          }
-          this.emit({...oldState});
-      }
+      let p = (e: PopStateEvent)=>{
+        let oldState: RouteState = e.state;
+        if(!oldState){
+          oldState=this.initState;
+        }
+        this.emit({...oldState});
+      };
+      //@ts-ignore
+      p.bloc_name = routerConfig.bloc_name;
+
+      window.onpopstate = p;
     }
   }
 
@@ -51,7 +69,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
         data,
       };
       this.emit(newRouteState);
-      if(this.save_history){
+      if(this.routerConfig?.save_history){
         let t = url_path.split('/').join('-').toUpperCase().substring(1);
         history.pushState(newRouteState,t,window.location.origin+this._init_path+url_path);
       }
