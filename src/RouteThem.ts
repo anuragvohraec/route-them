@@ -13,8 +13,8 @@ export class RouteThemBloc extends Bloc<RouteState>{
   private _compass: Compass = new Compass();
   private _init_path: string;
 
-  constructor(private initState: RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}){
-    super(initState);
+  constructor(private initState: RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }},bloc_name?:string){
+    super(initState,bloc_name);
     this._compass.define("/");
     let t = document.location.pathname;
     this._init_path = t.substring(0,t.length-1);

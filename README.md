@@ -58,6 +58,9 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "3.0.2"
+1. Upgraded bloc-them. facing bugs when route -the are nested with each others.
+
 ### "version": "3.0.1"
 1. On pop state if null is given then it will return the init state. Bug was because of this.
 
