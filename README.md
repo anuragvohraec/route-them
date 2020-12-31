@@ -58,6 +58,12 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "4.0.0"
+1. Need for version 4: Nested route-them where creating a lot of trouble. As both of them use to register window.onpopstate listeners.
+In an app only one router should be allowed to deal with history, and not every one (which created issues).
+Therefore from this version on every default router will not control history. Only **the one** passed `save_history:true` flag will be saving the history. In case any app tries to register multiple router bloc with this configuration, route-them will throw error.
+The implications of this is that gtoPage will no more have configuration to save to history functionality, as it will controlled something at construction time of that router.
+
 ### "version": "3.0.2"
 1. Upgraded bloc-them. facing bugs when route -the are nested with each others.
 

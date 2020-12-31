@@ -10,21 +10,27 @@ export interface RouteState{
 }
 
 export class RouteThemBloc extends Bloc<RouteState>{
+  public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}
   private _compass: Compass = new Compass();
   private _init_path: string;
 
-  constructor(private initState: RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }},bloc_name?:string){
+  constructor(private initState: RouteState = RouteThemBloc.INIT_STATE,bloc_name?:string,private save_history:boolean=false){
     super(initState,bloc_name);
     this._compass.define("/");
     let t = document.location.pathname;
     this._init_path = t.substring(0,t.length-1);
 
-    window.onpopstate = (e: PopStateEvent)=>{
-        let oldState: RouteState = e.state;
-        if(!oldState){
-          oldState=this.initState;
-        }
-        this.emit({...oldState});
+    if(save_history){
+      if(window.onpopstate){
+        throw `No two router can have pop states any more`;
+      }
+      window.onpopstate = (e: PopStateEvent)=>{
+          let oldState: RouteState = e.state;
+          if(!oldState){
+            oldState=this.initState;
+          }
+          this.emit({...oldState});
+      }
     }
   }
 
@@ -36,17 +42,18 @@ export class RouteThemBloc extends Bloc<RouteState>{
     history.back();
   }
   
-  goToPage(url_path: string, options: {data?: any, saveToBrowserHistory: boolean, title:string}={saveToBrowserHistory: true, title: ""}){
+  goToPage(url_path: string, data?: any){
     let r = this._compass.find(url_path);
     if(r){
       let newRouteState: RouteState = {
         url_path: url_path,
-        data: options.data,
-        pathDirection: r
+        pathDirection: r,
+        data,
       };
       this.emit(newRouteState);
-      if(options.saveToBrowserHistory){
-        history.pushState(newRouteState,options.title,window.location.origin+this._init_path+url_path);
+      if(this.save_history){
+        let t = url_path.split('/').join('-').toUpperCase().substring(1);
+        history.pushState(newRouteState,t,window.location.origin+this._init_path+url_path);
       }
     }else{
       console.log(`No route exists for path: ${url_path}`);
