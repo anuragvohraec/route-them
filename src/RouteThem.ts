@@ -13,7 +13,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
   private _compass: Compass = new Compass();
   private _init_path: string;
 
-  constructor(initState: RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}){
+  constructor(private initState: RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}){
     super(initState);
     this._compass.define("/");
     let t = document.location.pathname;
@@ -21,6 +21,9 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
     window.onpopstate = (e: PopStateEvent)=>{
         let oldState: RouteState = e.state;
+        if(!oldState){
+          oldState=this.initState;
+        }
         this.emit({...oldState});
     }
   }

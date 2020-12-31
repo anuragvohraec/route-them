@@ -58,6 +58,9 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "3.0.1"
+1. On pop state if null is given then it will return the init state. Bug was because of this.
+
 ### "version": "3.0.0"
 1. Now all route-them-controller, route-them , and a-page is a 100% width and height;
 
