@@ -11,7 +11,7 @@ export interface RouteState{
 
 export interface RouterConfig{
   bloc_name:string;
-  save_history:string;
+  save_history:boolean;
 }
 
 export interface PopStateFunction{
@@ -224,3 +224,40 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
 customElements.define("route-them-controller", RouteThemController);
 customElements.define('route-them', RouteThem);
 customElements.define("a-page", APage);
+
+
+export class AppPageBloc extends RouteThemBloc{
+  constructor(){
+    super({
+      bloc_name:"AppPageBloc",
+      save_history:true
+    })
+  }
+}
+
+export class AppPageController extends BlocsProvider{
+  constructor(){
+    super([
+      new AppPageBloc()
+    ])
+  }
+
+  builder(): TemplateResult {
+    return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
+  }
+}
+customElements.define("app-pages-controller",AppPageController);
+
+export class AppPage extends APage{
+  constructor(){
+    super(AppPageBloc)
+  }
+}
+customElements.define("app-page",AppPage);
+
+export class AppPageContainer extends RouteThem{
+  constructor(){
+    super("app-page",AppPageBloc);
+  }
+}
+customElements.define("app-pages-container",AppPageContainer);

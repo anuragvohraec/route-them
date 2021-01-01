@@ -19,40 +19,59 @@
   <script type="module">
     import { html, render } from 'lit-html';
     import {BlocsProvider} from 'bloc-them';
-    import {RouteThemBloc} from '../dist/index.js';
+    import {RouteThemBloc,AppPageBloc} from  '../dist/index.js';
 
     render(
       html`
-<route-them-controller>
-  <div style="display: flex; ">
-  <div class="nav" @click=${function(){
-    let routeBloc = BlocsProvider.of(RouteThemBloc,this);
-    routeBloc.goToPage("/contacts");
-  }}>GoToContacts</div>
-  <div class="nav" @click=${function(){
-    let routeBloc = BlocsProvider.of(RouteThemBloc,this);
-    routeBloc.goToPage("/");
-  }}>GoToHome</div>
-  <div class="nav"  @click=${function(){
-    let routeBloc = BlocsProvider.of(RouteThemBloc,this);
-    routeBloc.goToPage("/contacts/tester123");
-  }}>GoToProfile</div>
-  </div>
-  <route-them>
-    <a-page route="/">
-      <div>Home</div>
-      <div><img src="green.png"></div>
-    </a-page>
-    <a-page route="/contacts">
-      <div>Contacts</div>
-      <div><img src="blue.png"></div>
-    </a-page>
-    <a-page route="/contacts/:id" behaves="reload">
-      <div>Contacts for id: </div>
-      <div><img src="red.png"></div>
-    </a-page>
-  </route-them>
-</route-them-controller>
+<app-pages-controller>
+  <app-pages-container>
+    <app-page route="/">
+      <route-them-controller>
+        <div style="display: flex; ">
+          <div class="nav" @click=${function(){
+          let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+          routeBloc.goToPage("/");
+        }}>GoToTab1</div>
+        <div class="nav" @click=${function(){
+          let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+          routeBloc.goToPage("/contacts");
+        }}>GoToTab2</div>
+        <div class="nav"  @click=${function(){
+          let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+          routeBloc.goToPage("/contacts/tester123");
+        }}>GoToTab3</div>
+        </div>
+        <route-them>
+          <a-page route="/">
+            <div>Tab1</div>
+            <div><img src="green.png"></div>
+            <div @click=${function(){
+              let routeBloc = BlocsProvider.of(AppPageBloc,this);
+              console.log(routeBloc?"Found":"Notfound");
+              routeBloc.goToPage("/page2");
+            }}>Click here to go to page2</div>
+          </a-page>
+          <a-page route="/contacts">
+            <div>Tab2</div>
+            <div><img src="blue.png"></div>
+          </a-page>
+          <a-page route="/contacts/:id" behaves="reload">
+            <div>Tab3</div>
+            <div><img src="red.png"></div>
+          </a-page>
+        </route-them>
+      </route-them-controller>
+    </app-page>
+    <app-page route="/page2">
+      <div>page2</div>
+      <div @click=${function(){
+        let routeBloc = BlocsProvider.of(AppPageBloc,this);
+        routeBloc.popOutOfCurrentPage();
+      }}>Use back button or click on this</div>
+    </app-page>
+  </app-pages-container>
+</app-page-controller>
+
       `,
       document.querySelector('#demo')
     );
