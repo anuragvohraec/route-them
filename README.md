@@ -58,6 +58,9 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "4.0.1"
+1. Bug fix: Uncaught DOMException: Failed to execute 'define' on 'CustomElementRegistry': the name "route-them-controller" has already been used with this registry.
+
 ### "version": "4.0.0"
 1. Need for version 4: Nested route-them where creating a lot of trouble. As both of them use to register window.onpopstate listeners.
 In an app only one router should be allowed to deal with history, and not every one (which created issues).

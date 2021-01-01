@@ -221,9 +221,9 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
 
 }
 
-customElements.define("route-them-controller", RouteThemController);
-customElements.define('route-them', RouteThem);
-customElements.define("a-page", APage);
+customElements.get("route-them-controller")||customElements.define("route-them-controller", RouteThemController);
+customElements.get("route-them")||customElements.define('route-them', RouteThem);
+customElements.get("a-page")||customElements.define("a-page", APage);
 
 
 export class AppPageBloc extends RouteThemBloc{
@@ -246,18 +246,18 @@ export class AppPageController extends BlocsProvider{
     return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
   }
 }
-customElements.define("app-pages-controller",AppPageController);
+customElements.get("app-pages-controller")||customElements.define("app-pages-controller",AppPageController);
 
 export class AppPage extends APage{
   constructor(){
     super(AppPageBloc)
   }
 }
-customElements.define("app-page",AppPage);
+customElements.get("app-page")||customElements.define("app-page",AppPage);
 
 export class AppPageContainer extends RouteThem{
   constructor(){
     super("app-page",AppPageBloc);
   }
 }
-customElements.define("app-pages-container",AppPageContainer);
+customElements.get("app-pages-container")||customElements.define("app-pages-container",AppPageContainer);
