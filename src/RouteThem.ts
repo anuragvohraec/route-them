@@ -134,12 +134,10 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   private initInnerHTML:string;
   
   private _loaded_once: boolean=false;
-  private _reloadTemplate:TemplateResult;
 
   constructor(blocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
     super(blocType)
     this.initInnerHTML=this.innerHTML;
-    this._reloadTemplate=this._getHtmlWithInnerContent();
   }
 
   
@@ -183,7 +181,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
       case "hide":
         return this._getBaseTemplate(doHide);
       case "reload":
-        return html`${doHide?html`<div></div>`: this._reloadTemplate}`
+        return html`${doHide?html`<div></div>`: this._getHtmlWithInnerContent()}`
       case "lazyhide":{
         //if its for the first time
         return html`${this._loaded_once?this._getBaseTemplate(doHide):(doHide?html`<div></div>`:(()=>{
@@ -192,10 +190,10 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
         })())}`;
       }
     }
-    
   }
 
   protected _getHtmlWithInnerContent():TemplateResult{
+    this.innerHTML='';
     const t = html`<div style="width:100%;height:100%;">
     ${unsafeHTML(this.initInnerHTML)}
     </div>`;

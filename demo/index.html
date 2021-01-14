@@ -24,7 +24,8 @@
     class MyWc extends HTMLElement{
       constructor(){
         super();
-        render(html`<div>This is an external webComponent: ${new Date()}</div><div><slot></slot></div>`,this);
+        this.attachShadow({mode: 'open'});
+        render(html`<div>This is an external webComponent: ${new Date()}</div><div><slot></slot></div>`,this.shadowRoot);
       }
     }
     customElements.define("my-wc",MyWc);
