@@ -20,6 +20,14 @@
     import { html, render } from 'lit-html';
     import {BlocsProvider} from 'bloc-them';
     import {RouteThemBloc,AppPageBloc} from  '../dist/index.js';
+    
+    class MyWc extends HTMLElement{
+      constructor(){
+        super();
+        render(html`<div>This is an external webComponent: ${new Date()}</div><div><slot></slot></div>`,this);
+      }
+    }
+    customElements.define("my-wc",MyWc);
 
     render(
       html`
@@ -59,6 +67,7 @@
             <div>Tab3</div>
             <div><img src="red.png"></div>
             <textarea></textarea>
+            <my-wc>With some slot components</my-wc>
           </a-page>
         </route-them>
       </route-them-controller>

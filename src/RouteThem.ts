@@ -1,7 +1,7 @@
 import { html, TemplateResult} from 'lit-html';
 import {Bloc, BlocsProvider, BlocBuilder, BlocType} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
-
+import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 
 export interface RouteState{
   url_path: string;
@@ -131,11 +131,15 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
 
 export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   static _allowedBehavior: Set<string>=new Set<string>(["hide","lazyhide","reload"]);
+  private initInnerHTML:string;
   
   private _loaded_once: boolean=false;
+  private _reloadTemplate:TemplateResult;
 
   constructor(blocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
     super(blocType)
+    this.initInnerHTML=this.innerHTML;
+    this._reloadTemplate=this._getHtmlWithInnerContent();
   }
 
   
@@ -179,7 +183,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
       case "hide":
         return this._getBaseTemplate(doHide);
       case "reload":
-        return html`${doHide?html`<div></div>`:this._getBaseTemplate(false)}`
+        return html`${doHide?html`<div></div>`: this._reloadTemplate}`
       case "lazyhide":{
         //if its for the first time
         return html`${this._loaded_once?this._getBaseTemplate(doHide):(doHide?html`<div></div>`:(()=>{
@@ -189,6 +193,13 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
       }
     }
     
+  }
+
+  protected _getHtmlWithInnerContent():TemplateResult{
+    const t = html`<div style="width:100%;height:100%;">
+    ${unsafeHTML(this.initInnerHTML)}
+    </div>`;
+    return t;
   }
 
   protected _getBaseTemplate(doHide: boolean): TemplateResult{
