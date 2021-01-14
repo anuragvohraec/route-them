@@ -164,7 +164,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
     return "lazyhide";
   }
 
-  private toBeHidden(state: RouteState):boolean{
+  public toBeHidden(state: RouteState):boolean{
     if(state.pathDirection.matched_pattern === this.route){
       return false;
     }else{
