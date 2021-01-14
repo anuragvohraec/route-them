@@ -27,8 +27,24 @@
         this.attachShadow({mode: 'open'});
         render(html`<div>This is an external webComponent: ${new Date()}</div><div><slot></slot></div>`,this.shadowRoot);
       }
+      
+  connectedCallback(){
+    console.log("Connected component");
+  }
     }
     customElements.define("my-wc",MyWc);
+
+    class Page2 extends HTMLElement{
+      constructor(){
+        super();
+        this.attachShadow({mode: 'open'});
+        render(html`<div @click=${function(){
+        let routeBloc = BlocsProvider.of(AppPageBloc,this);
+        routeBloc.popOutOfCurrentPage();
+      }}>Use back button or click on this</div>`,this.shadowRoot);
+      }
+    }
+    customElements.define("page-two",Page2);
 
     render(
       html`
@@ -73,12 +89,9 @@
         </route-them>
       </route-them-controller>
     </app-page>
-    <app-page route="/page2">
+    <app-page route="/page2" behaves="reload">
       <div>page2</div>
-      <div @click=${function(){
-        let routeBloc = BlocsProvider.of(AppPageBloc,this);
-        routeBloc.popOutOfCurrentPage();
-      }}>Use back button or click on this</div>
+      <page-two></page-two>
     </app-page>
   </app-pages-container>
 </app-page-controller>

@@ -40,9 +40,9 @@ let routeBloc = BlocsProvider.of(RouteThemBloc,this);
 routeBloc.goToPage("/contacts");
 ```
 ## Controlling page behavior with **behaves** attribute
-1. on a page **behaves** attribute can be provided, which can have three value: **hide** | **lazyhide** | **reload**
-2. **hide** all pages will be loaded, but only kept hidden. **lazyhide** will not render page iuntil its once called., after that it keep loaded. And **reload** will remove and reload the page, wheenever that page is accessed.
-3. default value is **lazyhide**.
+1. on a page **behaves** attribute can be provided, which can have three value: **hide** | **reload**
+2. **hide** all pages will be loaded, but only kept hidden. And **reload** will remove and reload the page (cleaning up all values inputed , its  fresh view altogether), whenever that page is accessed. Default vau eis **hide**.
+
 
 
 ## Tooling configs
@@ -58,6 +58,10 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+
+### "version": "5.0.0",
+1. Removed lazy hide as it was making no sens. Made reload behavior a true reload behavior.
+
 ### "version": "4.0.1"
 1. Bug fix: Uncaught DOMException: Failed to execute 'define' on 'CustomElementRegistry': the name "route-them-controller" has already been used with this registry.
 
@@ -70,7 +74,6 @@ The implications of this is that gtoPage will no more have configuration to save
 * app-pages-controller
 * app-pages-container
 * app-page
-
 
 ### "version": "3.0.2"
 1. Upgraded bloc-them. facing bugs when route -the are nested with each others.

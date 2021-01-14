@@ -130,17 +130,20 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
 
 
 export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
-  static _allowedBehavior: Set<string>=new Set<string>(["hide","lazyhide","reload"]);
   private initInnerHTML:string;
+  private behavior:"hide"|"reload"="hide";
   
-  private _loaded_once: boolean=false;
-
   constructor(blocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
     super(blocType)
     this.initInnerHTML=this.innerHTML;
+    let r = this.getAttribute("behaves");
+    if(r){
+      r = r.toLowerCase();
+      //@ts-ignore
+      this.behavior=r;
+    }
   }
 
-  
   public get route() : string {
     let r = this.getAttribute("route");
     if(!r){
@@ -148,22 +151,6 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
     }else{
       return r;
     } 
-  }
-  
-
-  /**
-   * Default behavior is lazyhide
-   */
-  private getBehavior():"hide"|"lazyhide"|"reload"{
-    let r = this.getAttribute("behaves");
-    if(r){
-      r = r.toLowerCase();
-      if(APage._allowedBehavior.has(r)){
-        //@ts-ignore
-        return r;
-      }
-    }
-    return "lazyhide";
   }
 
   public toBeHidden(state: RouteState):boolean{
@@ -177,18 +164,13 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   builder(state: RouteState): TemplateResult {
     let doHide:boolean = this.toBeHidden(state);
 
-    switch(this.getBehavior()){
+    switch(this.behavior){
       case "hide":
         return this._getBaseTemplate(doHide);
       case "reload":
-        return html`${doHide?html`<div></div>`: this._getHtmlWithInnerContent()}`
-      case "lazyhide":{
-        //if its for the first time
-        return html`${this._loaded_once?this._getBaseTemplate(doHide):(doHide?html`<div></div>`:(()=>{
-          this._loaded_once = true;
-          return this._getBaseTemplate(false);
-        })())}`;
-      }
+        return html`${doHide?html`<div></div>`: this._getHtmlWithInnerContent()}`;
+      default:
+        return this._getBaseTemplate(doHide);
     }
   }
 
