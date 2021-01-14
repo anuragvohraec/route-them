@@ -179,25 +179,13 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
       case "hide":
         return this._getBaseTemplate(doHide);
       case "reload":
-        if(doHide){
-          return html``;
-        }else{
-          return this._getBaseTemplate(false);
-        }
+        return html`${doHide?html`<div></div>`:this._getBaseTemplate(false)}`
       case "lazyhide":{
         //if its for the first time
-        if(!this._loaded_once){
-          if(doHide){
-            return html``;
-          }else{
-            //that means we need to show;
-            this._loaded_once = true;
-            return this._getBaseTemplate(false);
-          }
-        }else{
-          //its already loaded 
-          return this._getBaseTemplate(doHide);
-        }
+        return html`${this._loaded_once?this._getBaseTemplate(doHide):(doHide?html`<div></div>`:(()=>{
+          this._loaded_once = true;
+          return this._getBaseTemplate(false);
+        })())}`;
       }
     }
     
