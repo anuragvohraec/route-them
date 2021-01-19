@@ -73,7 +73,7 @@
             <div @click=${function(){
               let routeBloc = BlocsProvider.of(AppPageBloc,this);
               console.log(routeBloc?"Found":"Notfound");
-              routeBloc.goToPage("/page2");
+              routeBloc.goToPage("/#/page2");
             }}>Click here to go to page2</div>
           </a-page>
           <a-page route="/contacts">
@@ -89,7 +89,7 @@
         </route-them>
       </route-them-controller>
     </app-page>
-    <app-page route="/page2" behaves="reload">
+    <app-page route="/#/page2" behaves="reload">
       <div>page2</div>
       <page-two></page-two>
     </app-page>

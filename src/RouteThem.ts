@@ -3,6 +3,25 @@ import {Bloc, BlocsProvider, BlocBuilder, BlocType} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 
+class _Utils{
+  /**
+ * * build_path("https://my.com/proxy/db","/some1/db?a=12") > "https://my.com/proxy/db/some1/db?a=12"
+ * * build_path("https://my.com/proxy/db/","/some1/db?a=12") > "https://my.com/proxy/db/some1/db?a=12"
+ * @param args 
+ */
+static build_path(...args:string[]):string{
+  return args.map((part, i) => {
+    if (i === 0) {
+      return part.trim().replace(/[\/]*$/g, '')
+    } else {
+      return part.trim().replace(/(^[\/]*|[\/]*$)/g, '')
+    }
+  }).filter(x=>x.length).join('/')
+}
+
+}
+
+
 export interface RouteState{
   url_path: string;
   pathDirection: PathDirection;
@@ -22,13 +41,15 @@ export interface PopStateFunction{
 export class RouteThemBloc extends Bloc<RouteState>{
   public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}
   private _compass: Compass = new Compass();
-  private _init_path: string;
+  private _init_path?: string;
 
   constructor(private routerConfig?:RouterConfig, private initState: RouteState = RouteThemBloc.INIT_STATE){
     super(initState,routerConfig?.bloc_name);
     this._compass.define("/");
-    let t = document.location.pathname;
-    this._init_path = t.substring(0,t.length-1);
+
+    if(this.savesToHistory){
+      this._init_path = document.location.pathname;
+    }
 
     if(routerConfig?.save_history){
       if(!routerConfig.bloc_name){
@@ -71,13 +92,17 @@ export class RouteThemBloc extends Bloc<RouteState>{
       this.emit(newRouteState);
       if(this.routerConfig?.save_history){
         let t = url_path.split('/').join('-').toUpperCase().substring(1);
-        history.pushState(newRouteState,t,window.location.origin+this._init_path+url_path);
+        history.pushState(newRouteState,t,_Utils.build_path(window.location.origin,this._init_path!,url_path));
       }
     }else{
       console.log(`No route exists for path: ${url_path}`);
-      
     }
   }
+
+  get savesToHistory():boolean{
+    return this.routerConfig?.save_history?true:false;
+  }
+
 }
 
 export class RouteThemController extends BlocsProvider{
@@ -121,6 +146,13 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
       }
       routeBloc?.define(r);
     });
+
+    if(routeBloc?.savesToHistory){
+      const hash = window.location.hash;
+      if(hash){
+        routeBloc?.goToPage("/"+hash);
+      }
+    }
   }
 
   builder(state: number): TemplateResult {
