@@ -39,7 +39,7 @@
         super();
         this.attachShadow({mode: 'open'});
         render(html`<div @click=${function(){
-        let routeBloc = BlocsProvider.of(AppPageBloc,this);
+        let routeBloc = BlocsProvider.of("AppPageBloc",this);
         routeBloc.popOutOfCurrentPage();
       }}>Use back button or click on this</div>`,this.shadowRoot);
       }
@@ -54,15 +54,15 @@
       <route-them-controller>
         <div style="display: flex; ">
           <div class="nav" @click=${function(){
-          let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+          let routeBloc = BlocsProvider.of("RouteThemBloc",this);
           routeBloc.goToPage("/");
         }}>GoToTab1</div>
         <div class="nav" @click=${function(){
-          let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+          let routeBloc = BlocsProvider.of("RouteThemBloc",this);
           routeBloc.goToPage("/contacts");
         }}>GoToTab2</div>
         <div class="nav"  @click=${function(){
-          let routeBloc = BlocsProvider.of(RouteThemBloc,this);
+          let routeBloc = BlocsProvider.of("RouteThemBloc",this);
           routeBloc.goToPage("/contacts/tester123");
         }}>GoToTab3</div>
         </div>
@@ -71,7 +71,7 @@
             <div>Tab1</div>
             <div><img src="green.png"></div>
             <div @click=${function(){
-              let routeBloc = BlocsProvider.of(AppPageBloc,this);
+              let routeBloc = BlocsProvider.of("AppPageBloc",this);
               console.log(routeBloc?"Found":"Notfound");
               routeBloc.goToPage("/#/page2");
             }}>Click here to go to page2</div>

@@ -1,5 +1,5 @@
 import { html, TemplateResult} from 'lit-html';
-import {Bloc, BlocsProvider, BlocBuilder, BlocType} from 'bloc-them';
+import {Bloc, BlocsProvider, BlocBuilder} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 
@@ -28,10 +28,10 @@ export interface RouteState{
   data?: any;
 }
 
-export interface RouterConfig{
-  bloc_name:string;
-  save_history:boolean;
-}
+// export interface RouterConfig{
+//   bloc_name:string;
+//   save_history:boolean;
+// }
 
 export interface PopStateFunction{
   (e: PopStateEvent):any;
@@ -39,25 +39,20 @@ export interface PopStateFunction{
 }
 
 export class RouteThemBloc extends Bloc<RouteState>{
+  protected _name: string="RouteThemBloc";
   public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}
   private _compass: Compass = new Compass();
   private _init_path?: string;
 
-  constructor(private routerConfig?:RouterConfig, private initState: RouteState = RouteThemBloc.INIT_STATE){
-    super(initState,routerConfig?.bloc_name);
+  constructor(private save_history:boolean=false, private initState: RouteState = RouteThemBloc.INIT_STATE){
+    super(initState);
     this._compass.define("/");
 
-    if(this.savesToHistory){
+    if(this.save_history){
       this._init_path = document.location.pathname;
-    }
-
-    if(routerConfig?.save_history){
-      if(!routerConfig.bloc_name){
-        throw `For saving history bloc_name is mandatory`;
-      }
       if(window.onpopstate){
         const prev_bloc= (window.onpopstate as PopStateFunction).bloc_name;
-        throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${routerConfig.bloc_name}!`;
+        throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${this.name}!`;
       }
       let p = (e: PopStateEvent)=>{
         let oldState: RouteState = e.state;
@@ -66,8 +61,6 @@ export class RouteThemBloc extends Bloc<RouteState>{
         }
         this.emit({...oldState});
       };
-      //@ts-ignore
-      p.bloc_name = routerConfig.bloc_name;
 
       window.onpopstate = p;
     }
@@ -90,7 +83,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
         data,
       };
       this.emit(newRouteState);
-      if(this.savesToHistory){
+      if(this.save_history){
         let t = url_path.split('/').join('-').toUpperCase().substring(1);
         history.pushState(newRouteState,t,_Utils.build_path(window.location.origin,this._init_path!,url_path));
       }
@@ -113,10 +106,11 @@ export class RouteThemBloc extends Bloc<RouteState>{
     }
   }
 
-
-  get savesToHistory():boolean{
-    return this.routerConfig?.save_history?true:false;
+  
+  public get savesToHistory() : boolean {
+    return this.save_history;
   }
+  
 
 }
 
@@ -134,6 +128,7 @@ export class RouteThemController extends BlocsProvider{
 
 
 class _BogusBloc extends Bloc<number>{
+  protected _name: string="_BogusBloc";
   constructor(){
     super(0);
   }
@@ -144,15 +139,15 @@ class _BogusBloc extends Bloc<number>{
  * Without this man content will be visible uncontrollably.
  */
 export class RouteThem extends BlocBuilder<_BogusBloc,number>{
-  constructor(private pageTagName: string = "a-page", private routeBlocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
-    super(_BogusBloc, {
+  constructor(private pageTagName: string = "a-page", private routeBlocName: string="RouteThemBloc"){
+    super("_BogusBloc", {
       useThisBloc: new _BogusBloc()
     });
   }
   
   connectedCallback(){
     super.connectedCallback();
-    let routeBloc = BlocsProvider.of(this.routeBlocType,this);
+    let routeBloc = BlocsProvider.of<RouteThemBloc,RouteState>(this.routeBlocName,this);
     
     this.querySelectorAll(this.pageTagName).forEach(e=>{
       let r = e.getAttribute("route");
@@ -180,8 +175,8 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
   private initInnerHTML:string;
   private behavior:"hide"|"reload"="hide";
   
-  constructor(blocType: BlocType<RouteThemBloc, RouteState>=RouteThemBloc){
-    super(blocType)
+  constructor(blocName:string="RouteThemBloc"){
+    super(blocName)
     this.initInnerHTML=this.innerHTML;
     let r = this.getAttribute("behaves");
     if(r){
@@ -253,11 +248,9 @@ customElements.get("a-page")||customElements.define("a-page", APage);
 
 
 export class AppPageBloc extends RouteThemBloc{
+  protected _name: string="AppPageBloc";
   constructor(){
-    super({
-      bloc_name:"AppPageBloc",
-      save_history:true
-    })
+    super(true);
   }
 }
 
@@ -276,14 +269,14 @@ customElements.get("app-pages-controller")||customElements.define("app-pages-con
 
 export class AppPage extends APage{
   constructor(){
-    super(AppPageBloc)
+    super("AppPageBloc")
   }
 }
 customElements.get("app-page")||customElements.define("app-page",AppPage);
 
 export class AppPageContainer extends RouteThem{
   constructor(){
-    super("app-page",AppPageBloc);
+    super("app-page","AppPageBloc");
   }
 }
 customElements.get("app-pages-container")||customElements.define("app-pages-container",AppPageContainer);
