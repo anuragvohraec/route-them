@@ -90,7 +90,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
         data,
       };
       this.emit(newRouteState);
-      if(this.routerConfig?.save_history){
+      if(this.savesToHistory){
         let t = url_path.split('/').join('-').toUpperCase().substring(1);
         history.pushState(newRouteState,t,_Utils.build_path(window.location.origin,this._init_path!,url_path));
       }
@@ -98,6 +98,21 @@ export class RouteThemBloc extends Bloc<RouteState>{
       console.log(`No route exists for path: ${url_path}`);
     }
   }
+
+  _goToPageDoNotSaveHistory(url_path: string,data?: any){
+    let r = this._compass.find(url_path);
+    if(r){
+      let newRouteState: RouteState = {
+        url_path: url_path,
+        pathDirection: r,
+        data,
+      };
+      this.emit(newRouteState);
+    }else{
+      console.log(`No route exists for path: ${url_path}`);
+    }
+  }
+
 
   get savesToHistory():boolean{
     return this.routerConfig?.save_history?true:false;
@@ -150,7 +165,7 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
     if(routeBloc?.savesToHistory){
       const hash = window.location.hash;
       if(hash){
-        routeBloc?.goToPage("/"+hash);
+        routeBloc?._goToPageDoNotSaveHistory("/"+hash);
       }
     }
   }
