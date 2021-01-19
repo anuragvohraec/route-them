@@ -58,9 +58,11 @@ npm start
 To run a local development server that serves the basic demo located in `demo/index.html`
 
 ## Version info
+### "version": "5.0.1"
+1. Supports hashed path now, for page routes.
 
 ### "version": "5.0.0",
-1. Removed lazy hide as it was making no sens. Made reload behavior a true reload behavior.
+1. Removed lazy hide as it was making no sense. Made reload behavior a true reload behavior.
 
 ### "version": "4.0.1"
 1. Bug fix: Uncaught DOMException: Failed to execute 'define' on 'CustomElementRegistry': the name "route-them-controller" has already been used with this registry.
